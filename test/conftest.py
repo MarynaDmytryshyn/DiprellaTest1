@@ -31,6 +31,9 @@ def pytest_addoption(parser):
     parser.addoption("--incorrect-creds",
                      action='store',
                      help="Incorrect Username and Password to login to Diprella")
+    parser.addoption("--incorrect-pass",
+                     action='store',
+                     help="Correct Username and incorrect Password to login to Diprella")
     parser.addoption("--user-info",
                      action='store',
                      help="Name, Surname, Email and Password to register in Diprella")
@@ -76,13 +79,49 @@ def load_app(request):
 
     request.addfinalizer(driver_close)
 
-def pytest_generate_tests(metafunc):
+@pytest.fixture(scope="function")
+def correct_credentials():
     creds_list = list()
-    with open(os.path.join(os.path.abspath(os.path.curdir), 'correct-creds.txt'), 'r') as input_file:
+    with open(os.path.join(os.path.abspath(os.path.curdir), 'test', 'correct-creds.txt'), 'r') as input_file:
         for line in input_file:
             vals = line.split(", ")
-            creds_list.append((str(vals[0]), str(vals[1].strip())))
-    metafunc.parametrize("username, password", tuple(creds_list))
+            creds_list.append(str(vals[0].strip()))
+            creds_list.append(str(vals[1].strip()))
+    return tuple(creds_list)
+
+@pytest.fixture(scope="function")
+def incorrect_credentials():
+    in_creds_list = list()
+    with open(os.path.join(os.path.abspath(os.path.curdir), 'test', 'incorrect-creds.txt'), 'r') as input_file:
+        for line in input_file:
+            vals = line.split(", ")
+            in_creds_list.append(str(vals[0].strip()))
+            in_creds_list.append(str(vals[1].strip()))
+        return tuple(in_creds_list)
+
+@pytest.fixture(scope="function")
+def incorrect_password():
+    some_creds_list = list()
+    with open(os.path.join(os.path.abspath(os.path.curdir), 'test', 'incorrect-pass.txt'), 'r') as input_file:
+        for line in input_file:
+            vals = line.split(", ")
+            some_creds_list.append(str(vals[0].strip()))
+            some_creds_list.append(str(vals[1].strip()))
+        return tuple(some_creds_list)
+
+
+
+@pytest.fixture(scope="function")
+def user_information():
+    user_info = list()
+    with open(os.path.join(os.path.abspath(os.path.curdir), 'test', 'user-info.txt'), 'r') as input_file:
+        for line in input_file:
+            vals = line.split(", ")
+            user_info.append((str(vals[0]).strip()))
+            user_info.append((str(vals[1]).strip()))
+            user_info.append((str(vals[2]).strip()))
+            user_info.append((str(vals[3]).strip()))
+    return tuple(user_info)
 
 
 
@@ -91,5 +130,6 @@ def pytest_exception_interact(node, call, report):
     if report.failed:
         attach(
             node.instance.initialized_webdriver.get_screenshot_as_png(),
-            name="Screenshot of the StackOverflow on test fail",
+            name="Screenshot of Diprella tests for test fails",
             attachment_type=attachment_type.PNG
+        )
