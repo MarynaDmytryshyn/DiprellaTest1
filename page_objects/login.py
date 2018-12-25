@@ -6,29 +6,36 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from page_objects.user_workspace import UserWorkspacePage
 
+
 class LoginPage(object):
     def __init__(self, web_driver: WebDriver):
         # Initialize web driver
         self.web_driver = web_driver
-        self.username_input = self.username_input.web_driver.find_element(By.XPATH,
-                                                    "/html/body/app-root/div/app-auth/section/div[1]/form/fieldset/fieldset/input")
-        self.password_input = self.password_input.web_driver.find_element(By.XPATH,
-                                                    "/html/body/app-root/div/app-auth/section/div[1]/form/fieldset/div/fieldset/input")
+
+    @property
+    def username_input(self):
+        return WebDriverWait(self.web_driver,30).until(EC.presence_of_element_located((By.CSS_SELECTOR,
+                                                    "[formcontrolname=email]")))
+
+    @property
+    def password_input(self):
+        return WebDriverWait(self.web_driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,
+                                                    "[formcontrolname=password]")))
 
     @property
     def diprella_logo(self):
         return WebDriverWait(self.web_driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "/html/body/app-root/div/app-auth/section/a/div")))
+            EC.presence_of_element_located((By.CLASS_NAME, "page-logo")))
 
     @property
     def enter_regisration_button(self):
         return WebDriverWait(self.web_driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "/html/body/app-root/div/app-auth/section/div[2]/a/div")))
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".login__image-container-btn.white--btn--hover")))
 
     @property
     def fb_login_button(self):
         return WebDriverWait(self.web_driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "/html/body/app-root/div/app-auth/section/div[1]/nav/app-fb-auth/a")))
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".social__icons-box-link.facebook")))
 
     @property
     def google_login_button(self):
@@ -40,15 +47,26 @@ class LoginPage(object):
     def in_login_button(self):
         return WebDriverWait(self.web_driver, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "/html/body/app-root/div/app-auth/section/div[1]/nav/app-ln-auth/a")))
+                (By.CSS_SELECTOR, ".social__icons-box-link.linkedin")))
 
     @property
     def login_button(self):
         return WebDriverWait(self.web_driver, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "/html/body/app-root/div/app-auth/section/div[1]/form/button")))
+                (By.CSS_SELECTOR, ".login__form-btn.dark__btn--hover")))
 
 
+    @property
+    def error_message(self):
+        return WebDriverWait(self.web_driver, 10).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, ".error__text")))
+
+    @property
+    def sign_in_text(self):
+        return WebDriverWait(self.web_driver, 10).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, ".login__content-title")))
 
     def enter_username(self,username):
         self.username_input.send_keys(username)
@@ -65,3 +83,5 @@ class LoginPage(object):
     def click_on_login_button_negative(self):
         self.login_button.click()
         return self
+
+

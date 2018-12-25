@@ -10,30 +10,42 @@ class SignUpPage(object):
     def __init__(self, web_driver: WebDriver):
         # Initialize web driver
         self.web_driver = web_driver
-        self.name_input = self.name_input.web_driver.find_element(By.XPATH,
-                                        "/html/body/app-root/div/app-sign-up/section/div[3]/form/fieldset/div[1]/fieldset[1]/input")
-        self.password_input = self.password_input.web_driver.find_element(By.XPATH,
-                                        "/html/body/app-root/div/app-sign-up/section/div[3]/form/fieldset/div[2]/div/fieldset/input")
-        self.mail_input = self.mail_input.web_driver.find_element(By.XPATH,
-                                        "/html/body/app-root/div/app-sign-up/section/div[3]/form/fieldset/div[2]/fieldset/input")
-        self.surname_input = self.surname_input.web_driver.find_element(By.XPATH,
-                                        "/html/body/app-root/div/app-sign-up/section/div[3]/form/fieldset/div[1]/fieldset[2]/input")
+
+
+    @property
+    def name_input(self):
+        return WebDriverWait(self.web_driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR,"[formcontrolname=first_name]")))
+
+    @property
+    def password_input(self):
+        return WebDriverWait(self.web_driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR,"[formcontrolname=password]")))
+
+    @property
+    def mail_input(self):
+        return WebDriverWait(self.web_driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR,"[formcontrolname=email]")))
+
+    @property
+    def surname_input(self):
+        return WebDriverWait(self.web_driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR,"[formcontrolname=last_name]")))
 
     @property
     def diprella_logo(self):
         return WebDriverWait(self.web_driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "/html/body/app-root/div/app-sign-up/section/a/div")))
+            EC.presence_of_element_located((By.CLASS_NAME, "page-logo")))
 
     @property
     def regisration_button(self):
         return WebDriverWait(self.web_driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "/html/body/app-root/div/app-sign-up/section/div[3]/form/button")))
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".login__form-btn.dark__btn--hover")))
 
     @property
     def fb_login_button(self):
         return WebDriverWait(self.web_driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "/html/body/app-root/div/app-sign-up/section/div[3]/nav/app-fb-auth/a")))
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".social__icons-box-link.facebook")))
 
     @property
     def google_login_button(self):
@@ -44,8 +56,12 @@ class SignUpPage(object):
     @property
     def in_login_button(self):
         return WebDriverWait(self.web_driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "/html/body/app-root/div/app-sign-up/section/div[3]/nav/app-ln-auth/a")))
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".social__icons-box-link.linkedin")))
+
+    @property
+    def terms_checkbox(self):
+        return WebDriverWait(self.web_driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "terms")))
 
 
     def enter_name(self, name):
@@ -62,6 +78,10 @@ class SignUpPage(object):
 
     def enter_email(self,email):
         self.mail_input.send_keys(email)
+        return self
+
+    def click_on_terms_checkbox(self):
+        self.terms_checkbox.click()
         return self
 
     def click_on_registration_button(self):
