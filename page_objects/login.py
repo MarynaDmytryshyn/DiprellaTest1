@@ -30,7 +30,7 @@ class LoginPage(object):
     @property
     def enter_regisration_button(self):
         return WebDriverWait(self.web_driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".login__image-container-btn.white--btn--hover")))
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".image-container-btn.white--btn--hover")))
 
     @property
     def fb_login_button(self):
